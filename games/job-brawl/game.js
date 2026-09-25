@@ -10,7 +10,7 @@ const EDGE_GRACE = 24;      // 場外にいても落ちないフレーム数（�
 const DYING_FRAMES = 50;
 const STOCKS = 3;
 const P_COLORS = ['#ff5a5a', '#4aa8ff'];
-const MOVE_MUL = { melee: 0.35, projectile: 0.5, dash: 0, nova: 0.15, guard: 0 };
+const MOVE_MUL = { melee: 0.35, projectile: 0.2, dash: 0, nova: 0.15, guard: 0 };
 
 // ============================================================
 // ふっとばし力の計算（スマブラらしさの肝）
@@ -22,10 +22,14 @@ const MOVE_MUL = { melee: 0.35, projectile: 0.5, dash: 0, nova: 0.15, guard: 0 }
 // 戻り値: ふっとばしの初速（px/frame）
 //   摩擦 0.92 なので飛距離 ≈ 初速 × 12.5
 //   ステージ中央から場外まで 235px → 初速 およそ 19 以上で中央からでも落ちる
+//   目安: 戦士の大回転斬りで相手 100% → 中央からでも場外まで飛ぶ
 // ============================================================
+const KB_MAX = 36;
 function computeKnockback(hit, defender) {
-  // TODO: 蓄積ダメージが増えるほど大きく飛ぶようにする（今は % が効かない仮実装）
-  return hit.base;
+  const raw = hit.base + defender.damage * hit.growth;
+  // 重さは半分だけ効かせる（重い職業でも高 % なら落ちるように）
+  const weightMul = 1 / (0.5 + 0.5 * defender.weight);
+  return Math.min(KB_MAX, raw * weightMul);
 }
 
 const canvas = document.getElementById('game');
@@ -129,7 +133,7 @@ function cpuInput(p, o) {
     if (p.cd === 0) {
       const k = p.job.special.kind;
       let chance = d < pref + 30 ? 0.03 : 0;
-      if (k === 'guard') chance = o.action && d < 130 ? 0.25 : 0;
+      if (k === 'guard') chance = o.action && d < 130 ? 0.06 : 0;
       if (k === 'nova') chance = d < 110 ? 0.08 : 0;
       if (k === 'dash') chance = d < 200 ? 0.04 : 0;
       if (Math.random() < chance) { inp.sp = true; inp.face = face; }
@@ -198,6 +202,7 @@ function updateAction(p) {
 
   switch (m.kind) {
     case 'melee':
+      if (isActive) cutProjectiles(p, m);
       if (isActive && !a.hit.has(o) && canBeHit(o) && inArc(p, o, m)) {
         a.hit.add(o); hit(p, o, m, dirTo(p, o));
       }
@@ -302,6 +307,18 @@ function updateProjectiles() {
     }
   }
   game.projectiles = game.projectiles.filter(pr => pr.life > 0);
+}
+
+// 近接攻撃の判定内にある相手の弾を斬り落とす（遠距離職への対抗手段）
+function cutProjectiles(p, m) {
+  for (const pr of game.projectiles) {
+    if (pr.owner === p || pr.life <= 0 || !inArc(p, pr, m)) continue;
+    pr.life = 0;
+    for (let k = 0; k < 6; k++) {
+      const a = Math.random() * Math.PI * 2;
+      spawnParticle(pr.x, pr.y, Math.cos(a) * 2.5, Math.sin(a) * 2.5, '#fff6c8', 3, 14);
+    }
+  }
 }
 
 function explode(pr) {
