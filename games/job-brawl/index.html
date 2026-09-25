@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JOB BRAWL</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #06080f; }
+  body { display: flex; align-items: center; justify-content: center; }
+  canvas {
+    width: min(100vw, calc(100vh * 960 / 640));
+    aspect-ratio: 960 / 640;
+    image-rendering: auto;
+    outline: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="game" width="960" height="640" tabindex="0"></canvas>
+<script src="jobs.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
