@@ -305,7 +305,7 @@ function drawTitle(){
   const J = '"Yu Gothic","Meiryo",sans-serif';
   const lines = [
     '移動：矢印キー / WASD　　ショット：Z / SPACE（押しっぱなしで連射）',
-    'パワーアップ：X / SHIFT　　ポーズ：P　　サウンドON/OFF：M',
+    'パワーアップ：X / SHIFT　　ポーズ：P　　サウンドON/OFF：M　　ゲーム選択へ：ESC',
     '赤い敵や編隊を全滅させるとカプセル出現 → ゲージが進む → Xで装備！',
     '青いカプセルは画面内の敵を一掃',
   ];

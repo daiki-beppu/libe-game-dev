@@ -393,7 +393,7 @@ function updateStars(sp = SCROLL){
 function update(){
   frame++;
   if (hit('KeyM')){ muted = !muted; if (master) master.gain.value = muted ? 0 : 0.5; }
-  if (state === 'title'){ updateStars(2); if (hit('Enter','KeyZ','Space')){ state = 'select'; selRow = 0; sfx('capsule'); } return; }
+  if (state === 'title'){ updateStars(2); if (hit('Escape')){ location.href = '../../'; return; } if (hit('Enter','KeyZ','Space')){ state = 'select'; selRow = 0; sfx('capsule'); } return; }
   if (state === 'select'){
     updateStars(2);
     if (hit('ArrowUp','KeyW')){ selRow = (selRow + 4) % 5; sfx('tink'); }
