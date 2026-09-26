@@ -18,4 +18,13 @@
 
 ## 構成
 
-- `index.html` — ゲーム全体（エンジン・描画・サウンド合成）。外部ファイル依存なし（フォントのみ Google Fonts）
+外部ファイル依存なし（フォントのみ Google Fonts）。ビルド不要で、`index.html` が下の順にスクリプトを読み込む。
+
+- `index.html` — Canvas とスクリプトの読み込みだけ
+- `config.js` — 画面サイズ・ステージテーマ・ウェポンエディットの定義と汎用ユーティリティ
+- `input.js` — キーボード入力
+- `audio.js` — 効果音と BGM（Web Audio で合成）
+- `stage.js` — 地形生成・敵の出現スケジュール
+- `game.js` — ゲーム状態とフレーム更新（自機・ショット・敵・ボス・パワーアップ）
+- `render.js` — Canvas 描画
+- `main.js` — メインループ（60fps 固定）
