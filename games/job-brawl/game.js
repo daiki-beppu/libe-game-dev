@@ -418,6 +418,7 @@ function tick() {
 }
 
 function tickSelect() {
+  if (pressed.has('Escape')) { location.href = '../../'; return; }
   if (pressed.has('KeyT')) { game.p2cpu = !game.p2cpu; game.sel[1].ready = false; }
   for (let i = 0; i < 2; i++) {
     const s = game.sel[i], c = CONTROLS[i];
@@ -732,5 +733,5 @@ function drawSelect() {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.font = '14px sans-serif'; ctx.fillStyle = '#9aa';
   ctx.fillText('1P: WASD 移動 / C 攻撃 / V 必殺　　2P: 矢印 移動 / . 攻撃 / / 必殺', W / 2, 548);
-  ctx.fillText(`T: 2P を ${game.p2cpu ? '人間' : 'CPU'} に切り替え　　Esc: 試合中に選択画面へ　　※ 英数入力モードで遊んでください`, W / 2, 574);
+  ctx.fillText(`T: 2P を ${game.p2cpu ? '人間' : 'CPU'} に切り替え　　Esc: ゲーム選択へ（試合中は職業選択へ）　　※ 英数入力モードで遊んでください`, W / 2, 574);
 }

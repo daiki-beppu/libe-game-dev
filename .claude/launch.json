@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "launcher",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8760"],
+      "port": 8760
+    },
+    {
       "name": "job-brawl",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "games/job-brawl"],
