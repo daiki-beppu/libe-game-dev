@@ -1,0 +1,3 @@
+# 検索エンジンにインデックスさせない（全ページ・全ファイル）
+/*
+  X-Robots-Tag: noindex, nofollow

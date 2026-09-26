@@ -6,6 +6,18 @@
 
 リポジトリ直下で `python3 -m http.server 8760` を起動し、http://localhost:8760/ を開くとゲーム選択画面が出る。
 
+## 公開（Cloudflare）
+
+リポジトリ直下を Cloudflare Workers の静的アセットとしてそのまま配信する（ビルドなし）。
+
+```bash
+npx wrangler deploy
+```
+
+- 設定は [wrangler.jsonc](wrangler.jsonc)。公開しないファイル（`.claude/`・`docs/`・`*.md` など）は [.assetsignore](.assetsignore) で除外する
+- 検索エンジンにインデックスさせないよう、[_headers](_headers) で全レスポンスに `X-Robots-Tag: noindex, nofollow` を付ける
+- 初回は `npx wrangler login` でログインが必要
+
 ## ゲームを追加する
 
 1. `games/<slug>/index.html` を作る
