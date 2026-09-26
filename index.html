@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GAME SELECT</title>
+<style>
+  :root {
+    --bg: #06080f;
+    --panel: #111827;
+    --panel-hi: #1b2437;
+    --text: #f5f7fb;
+    --muted: #9aa4b8;
+    --line: #273047;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+  body {
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    padding: 48px 16px 64px;
+  }
+  header { max-width: 960px; margin: 0 auto 32px; text-align: center; }
+  h1 { margin: 0; font-size: clamp(28px, 6vw, 44px); letter-spacing: 0.12em; }
+  header p { margin: 8px 0 0; color: var(--muted); }
+
+  .grid {
+    max-width: 960px; margin: 0 auto; padding: 0; list-style: none;
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .card {
+    --accent: #888;
+    display: flex; flex-direction: column; gap: 10px; height: 100%;
+    padding: 20px; border-radius: 14px;
+    background: var(--panel); border: 2px solid var(--line);
+    color: inherit; text-decoration: none; outline: none;
+    transition: transform .12s, border-color .12s, background .12s;
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--accent); background: var(--panel-hi);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .icon {
+    display: grid; place-items: center;
+    width: 64px; height: 64px; border-radius: 12px; font-size: 36px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .title { margin: 0; font-size: 20px; letter-spacing: 0.06em; }
+  .desc { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; flex: 1; }
+  .tag {
+    align-self: flex-start; font-size: 12px; padding: 2px 10px; border-radius: 999px;
+    border: 1px solid var(--accent); color: var(--accent);
+  }
+  .empty { text-align: center; color: var(--muted); }
+  footer { max-width: 960px; margin: 32px auto 0; text-align: center; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GAME SELECT</h1>
+  <p>遊ぶゲームを選んでください</p>
+</header>
+
+<ul class="grid" id="games"></ul>
+
+<footer>矢印キーで選択 / Enter で開始</footer>
+
+<script src="games/catalog.js"></script>
+<script>
+  const list = document.getElementById('games');
+
+  function renderCard(g) {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = `games/${g.slug}/`;
+    a.style.setProperty('--accent', g.color);
+    a.innerHTML = `
+      <span class="icon"></span>
+      <h2 class="title"></h2>
+      <p class="desc"></p>
+      <span class="tag"></span>`;
+    a.querySelector('.icon').textContent = g.icon;
+    a.querySelector('.title').textContent = g.title;
+    a.querySelector('.desc').textContent = g.desc;
+    a.querySelector('.tag').textContent = g.players;
+    li.append(a);
+    return li;
+  }
+
+  if (GAMES.length === 0) {
+    list.outerHTML = '<p class="empty">まだゲームがありません</p>';
+  } else {
+    list.append(...GAMES.map(renderCard));
+  }
+
+  // 現在のグリッドの列数（画面幅で変わる）
+  function columnCount() {
+    return getComputedStyle(list).gridTemplateColumns.split(' ').length;
+  }
+
+  // 矢印キーで次にフォーカスするカードの index を返す。
+  //   current : いまフォーカスしているカードの index（未選択なら -1）
+  //   key     : 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown'
+  //   count   : カードの総数
+  //   cols    : 1 行あたりの列数
+  function nextIndex(current, key, count, cols) {
+    if (current < 0) return 0;
+    // 左右は並び順でループ（右端 → 次の行の先頭、最後 → 最初）
+    if (key === 'ArrowRight') return (current + 1) % count;
+    if (key === 'ArrowLeft') return (current - 1 + count) % count;
+    // 上下は同じ列のままループ。最終行が欠けている列は 1 つ上の行に着地する
+    const col = current % cols;
+    if (key === 'ArrowDown') return current + cols < count ? current + cols : col;
+    if (key === 'ArrowUp') {
+      if (current - cols >= 0) return current - cols;
+      const last = Math.floor((count - 1) / cols) * cols + col;
+      return last < count ? last : last - cols;
+    }
+    return current;
+  }
+
+  const cards = [...document.querySelectorAll('.card')];
+  document.addEventListener('keydown', (e) => {
+    if (!e.key.startsWith('Arrow') || cards.length === 0) return;
+    e.preventDefault();
+    const i = nextIndex(cards.indexOf(document.activeElement), e.key, cards.length, columnCount());
+    cards[i].focus();
+  });
+  cards[0]?.focus({ preventScroll: true });
+</script>
+</body>
+</html>
