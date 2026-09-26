@@ -1,0 +1,10 @@
+# 公開しないもの（.gitignore と同じ書式）
+.git
+.claude
+.wrangler
+node_modules
+docs
+*.md
+wrangler.jsonc
+.gitignore
+.assetsignore

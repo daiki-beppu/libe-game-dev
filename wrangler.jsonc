@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "libe-game-dev",
+  "compatibility_date": "2026-09-25",
+  // スクリプトなし。リポジトリ直下をそのまま静的配信する（除外は .assetsignore、ヘッダーは _headers）
+  "assets": {
+    "directory": "."
+  }
+}
