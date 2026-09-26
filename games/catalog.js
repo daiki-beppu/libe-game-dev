@@ -15,4 +15,12 @@ const GAMES = [
     players: '1〜2人',
     desc: '職業ごとの技で相手をステージから叩き落とす、見下ろし型の 2D 対戦。',
   },
+  {
+    slug: 'stellar-viper',
+    title: 'STELLAR VIPER',
+    icon: '🚀',
+    color: '#60c0ff',
+    players: '1人',
+    desc: 'パワーアップゲージとウェポンエディットで自機を強化する、横スクロールシューティング。',
+  },
 ];
